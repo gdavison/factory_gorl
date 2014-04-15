@@ -1,7 +1,12 @@
 package factory_gorl
 
+import (
+	"github.com/coopernurse/gorp"
+)
+
 var (
 	factories map[string]*Factory
+	DbMap     *gorp.DbMap
 )
 
 func RegisterFactory(factory *Factory) {

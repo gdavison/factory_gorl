@@ -15,8 +15,8 @@ go get github.com/gdavison/factory_gorl
 
 Status
 ------
-So far, it can be used to initialize (`Build`) an in-memory object. Persisting the
-object (`Create`) has not been implemented. Associations have not been implemented.
+So far, it can be used to initialize (`Build`) an in-memory object and to persist the
+object (`Create`) using [gorp](https://github.com/coopernurse/gorp). Associations have not yet been implemented.
 
 Factory inheritance is implemented.
 
