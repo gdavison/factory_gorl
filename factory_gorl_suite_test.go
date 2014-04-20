@@ -36,7 +36,6 @@ func initDb() *gorp.DbMap {
 	}
 
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
-	//dbmap.AddTableWithName(AutoIncrementIdTest{}, "AutoIncrementIdTests").SetKeys(true, "Id")
 	dbmap.AddTable(AutoIncrementIdTest{}).SetKeys(true, "Id")
 
 	if err := dbmap.CreateTablesIfNotExists(); err != nil {

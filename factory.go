@@ -25,6 +25,7 @@ func NewFactory(name string, i interface{}, builder Builder) (*Factory, error) {
 	f.builder = builder
 	return f, nil
 }
+
 func NewFactoryWithParent(name string, i interface{}, parent *Factory, builder Builder) (*Factory, error) {
 	buildType, err := toType(i)
 	if err != nil {
