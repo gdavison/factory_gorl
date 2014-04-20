@@ -13,11 +13,10 @@ func Build(name string) (interface{}, error) {
 }
 
 func Create(name string) (interface{}, error) {
-	factory := FactoryByName(name)
-	if factory == nil {
-		return nil, fmt.Errorf("factory_gorl: could not find Factory '%s'", name)
+	product, err := Build(name)
+	if err != nil {
+		return nil, err
 	}
-	product := factory.Run()
 	if err := DbMap.Insert(product); err != nil {
 		return nil, err
 	} else {
