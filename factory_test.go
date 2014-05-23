@@ -82,7 +82,7 @@ var _ = Describe("Running Factory", func() {
 			factory, _ = NewFactory("Test", Test{}, builder)
 		})
 		It("creates correct type", func() {
-			Expect(factory.Run()).To(BeAssignableToTypeOf(&Test{}))
+			Expect(factory.Run(nil)).To(BeAssignableToTypeOf(&Test{}))
 		})
 
 		Context("with a nil builder func", func() {
@@ -93,7 +93,7 @@ var _ = Describe("Running Factory", func() {
 				builder = nil
 			})
 			JustBeforeEach(func() {
-				result = factory.Run().(*Test)
+				result = factory.Run(nil).(*Test)
 			})
 			It("doesn't set any fields", func() {
 				Expect(result.foo).To(BeZero(), "foo should be Zero")
@@ -112,7 +112,7 @@ var _ = Describe("Running Factory", func() {
 				}
 			})
 			JustBeforeEach(func() {
-				result = factory.Run().(*Test)
+				result = factory.Run(nil).(*Test)
 			})
 			It("sets the fields", func() {
 				Expect(result.foo).To(Equal("forty-two"))
@@ -130,13 +130,36 @@ var _ = Describe("Running Factory", func() {
 				}
 			})
 			JustBeforeEach(func() {
-				result = factory.Run().(*Test)
+				result = factory.Run(nil).(*Test)
 			})
 			It("sets the fields in the builder", func() {
 				Expect(result.bar).To(Equal(69))
 			})
 			It("doesn't set the fields not in the builder", func() {
 				Expect(result.foo).To(BeZero())
+			})
+		})
+		Context("with an override func", func() {
+			var (
+				result *Test
+			)
+			BeforeEach(func() {
+				builder = func(i interface{}) {
+					t := i.(*Test)
+					t.foo = "forty-two"
+					t.bar = 42
+				}
+			})
+			JustBeforeEach(func() {
+				result = factory.Run(func(i interface{}) {
+					t := i.(*Test)
+					t.foo = "thirteen"
+					t.bar = 13
+				}).(*Test)
+			})
+			It("sets the fields", func() {
+				Expect(result.foo).To(Equal("thirteen"))
+				Expect(result.bar).To(Equal(13))
 			})
 		})
 	})
@@ -150,7 +173,7 @@ var _ = Describe("Running Factory", func() {
 		JustBeforeEach(func() {
 			parent, _ := NewFactory("Parent", Test{}, parentBuilder)
 			factory, _ := NewFactoryWithParent("Child", Test{}, parent, childBuilder)
-			result = factory.Run().(*Test)
+			result = factory.Run(nil).(*Test)
 		})
 		Context("with a nil parent builder func", func() {
 			BeforeEach(func() {

@@ -57,9 +57,12 @@ func (factory *Factory) Name() string {
 	return factory.name
 }
 
-func (factory *Factory) Run() interface{} {
+func (factory *Factory) Run(override Builder) interface{} {
 	result := reflect.New(factory.buildType)
 	factory.build(result.Interface())
+	if override != nil {
+		override(result.Interface())
+	}
 	return result.Interface()
 }
 
