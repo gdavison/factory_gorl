@@ -14,8 +14,8 @@ type AutoIncrementIdTest struct {
 
 var _ = Describe("Build", func() {
 	var (
-		resultInterface interface{}
-		err             error
+		result interface{}
+		err    error
 	)
 	BeforeEach(func() { ResetConfiguration() })
 	Context("when there is a registered factory", func() {
@@ -25,33 +25,29 @@ var _ = Describe("Build", func() {
 		})
 		Context("when not overriding factory settings", func() {
 			JustBeforeEach(func() {
-				resultInterface, err = Build("Test", nil)
+				result, err = Build("Test", nil)
 			})
 			It("has a result value", func() {
-				Expect(resultInterface).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
 			})
 			It("creates correct type", func() {
-				Expect(resultInterface).To(BeAssignableToTypeOf(&Test{}))
+				Expect(result).To(BeAssignableToTypeOf(&Test{}))
 			})
 			It("does not return an error", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
 		Context("when overriding factory settings", func() {
-			var (
-				result *Test
-			)
 			JustBeforeEach(func() {
-				resultInterface, err = Build("Test", func(i interface{}) {
+				result, err = Build("Test", func(i interface{}) {
 					t := i.(*Test)
 					t.foo = "thirteen"
 					t.bar = 13
 				})
-				result = resultInterface.(*Test)
 			})
 			It("sets the fields based on the override", func() {
-				Expect(result.foo).To(Equal("thirteen"))
-				Expect(result.bar).To(Equal(13))
+				Expect(result.(*Test).foo).To(Equal("thirteen"))
+				Expect(result.(*Test).bar).To(Equal(13))
 			})
 
 		})
@@ -60,10 +56,10 @@ var _ = Describe("Build", func() {
 	Context("when there is not a registered factory", func() {
 		Context("when not overriding factory settings", func() {
 			JustBeforeEach(func() {
-				resultInterface, err = Build("Nonesuch", nil)
+				result, err = Build("Nonesuch", nil)
 			})
 			It("has no result value", func() {
-				Expect(resultInterface).To(BeNil())
+				Expect(result).To(BeNil())
 			})
 			It("returns an error", func() {
 				Expect(err).To(HaveOccurred())
@@ -71,10 +67,10 @@ var _ = Describe("Build", func() {
 		})
 		Context("when overriding factory settings", func() {
 			JustBeforeEach(func() {
-				resultInterface, err = Build("Nonesuch", func(i interface{}) {})
+				result, err = Build("Nonesuch", func(i interface{}) {})
 			})
 			It("has no result value", func() {
-				Expect(resultInterface).To(BeNil())
+				Expect(result).To(BeNil())
 			})
 			It("returns an error", func() {
 				Expect(err).To(HaveOccurred())
